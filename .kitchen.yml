@@ -1,0 +1,23 @@
+---
+driver:
+  name: vagrant
+  provision: true
+  vagrantfiles:
+    - files/Vagrant.Disk.rb
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: debian
+    driver:
+      box: debian/jessie64
+      box_url: debian/jessie64
+
+suites:
+  - name: default
+    run_list:
+      - recipe[rpi-storage::default]
+    attributes:
+      rpi-storage:
+        removable: '0'
