@@ -10,9 +10,21 @@ provisioner:
 
 platforms:
   - name: debian
+    attributes:
+      rpi-storage:
+        removable: '0'
+        exports-host: 'localhost'
+        imports-dir: '/media/nfs_mounts'
+        exports-dir: '/media/removable'
+        local-imports-dir: '/media/local_imports'
+        shares:
+          - 'named_disk'
+          - 'e6475558-2f3d-4d1f-830b-f9ce50ad211f'
     driver:
       box: debian/jessie64
       box_url: debian/jessie64
+      network:
+         - ["private_network", {ip: "192.168.33.34"}]
 
 suites:
   - name: default
@@ -21,3 +33,13 @@ suites:
     attributes:
       rpi-storage:
         removable: '0'
+  - name: export
+    run_list:
+      - recipe[rpi-storage::default]
+      - recipe[rpi-storage::export]
+      - recipe[rpi-storage::mount-nfs]
+  - name: mount-nfs
+    run_list:
+      - recipe[rpi-storage::default]
+      - recipe[rpi-storage::export]
+      - recipe[rpi-storage::mount-nfs]
